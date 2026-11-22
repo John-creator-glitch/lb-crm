@@ -1,0 +1,18 @@
+import { friendlyError, positiveAmount, required, pkPhone, whatsappUrl, telUrl } from '../src/lib/errors';
+let fail = 0;
+const t = (n: string, ok: boolean) => { console.log(`${ok ? 'PASS' : 'FAIL'} ${n}`); if (!ok) fail++; };
+t('network', /No internet/.test(friendlyError({ message: 'TypeError: Failed to fetch' })));
+t('rls', /permission/.test(friendlyError('new row violates row-level security policy for table "payments"')));
+t('dup', /already exists/.test(friendlyError({ message: 'duplicate key value violates unique constraint' })));
+t('fk', /linked to other records/.test(friendlyError({ message: 'violates foreign key constraint' })));
+t('missing fn', /not been updated/.test(friendlyError({ message: 'Could not find the function public.kpi_ids in the schema cache' })));
+t('empty', /Save failed/.test(friendlyError(null)));
+t('unknown passes through', friendlyError('Amount locked after posting') === 'Amount locked after posting');
+t('required', required('  ', 'Name') !== '' && required('x', 'Name') === '');
+t('amount', positiveAmount('0') !== '' && positiveAmount('-5') !== '' && positiveAmount('abc') !== '' && positiveAmount('1,500') === '');
+t('phone ok', pkPhone('0300 1234567') === '' && pkPhone('+92 300 1234567') === '' && pkPhone('') === '');
+t('phone bad', pkPhone('123') !== '');
+t('wa', whatsappUrl('0300-1234567') === 'https://wa.me/923001234567' && whatsappUrl('abc') === null);
+t('wa text', whatsappUrl('03001234567', 'a b')!.endsWith('?text=a%20b'));
+t('tel', telUrl('0300 1234567') === 'tel:03001234567' && telUrl('12') === null);
+if (fail) process.exit(1);

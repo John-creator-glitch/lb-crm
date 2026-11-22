@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* M7: accessibility + touch basics */
+:focus-visible { outline: 2px solid #d97706; outline-offset: 2px; }
+input:focus-visible, select:focus-visible, textarea:focus-visible { outline: none; }
+.skip-link { position: absolute; left: -9999px; top: 0; z-index: 100; background: #0f172a; color: #fff; padding: 0.75rem 1rem; border-radius: 0 0 0.5rem 0; }
+.skip-link:focus { left: 0; }
+@media (pointer: coarse) {
+  button, [role='button'], select, summary { min-height: 44px; }
+  input[type='checkbox'], input[type='radio'] { width: 1.25rem; height: 1.25rem; }
+}
+@media (prefers-reduced-motion: reduce) { * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }

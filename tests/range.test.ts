@@ -1,0 +1,14 @@
+import { rangeFor } from '../src/lib/range';
+let fails = 0;
+const eq = (n: string, g: unknown, w: unknown) => { const ok = JSON.stringify(g) === JSON.stringify(w); if (!ok) fails++; console.log(`${ok ? 'PASS' : 'FAIL'} ${n}${ok ? '' : ` got=${JSON.stringify(g)} want=${JSON.stringify(w)}`}`); };
+const t = '2026-11-18';
+eq('today', rangeFor('today', '', '', t), [t, t]);
+eq('last 7 days is 7 calendar days including today', rangeFor('week', '', '', t), ['2026-11-12', t]);
+eq('month starts on the 1st', rangeFor('month', '', '', t), ['2026-11-01', t]);
+eq('year starts 1 Jan', rangeFor('year', '', '', t), ['2026-01-01', t]);
+eq('week across a month end', rangeFor('week', '', '', '2026-12-03'), ['2026-11-27', '2026-12-03']);
+eq('custom keeps both ends', rangeFor('custom', '2026-10-01', '2026-10-31', t), ['2026-10-01', '2026-10-31']);
+eq('custom reversed is swapped', rangeFor('custom', '2026-10-31', '2026-10-01', t), ['2026-10-01', '2026-10-31']);
+eq('custom with one end uses today', rangeFor('custom', '2026-11-10', '', t), ['2026-11-10', t]);
+if (fails) process.exit(1);
+console.log('all passed');

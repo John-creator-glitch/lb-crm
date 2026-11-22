@@ -1,0 +1,10 @@
+import { csvCell } from '../src/lib/csv';
+let fail = 0; const t = (n: string, ok: boolean) => { console.log(`${ok ? 'PASS' : 'FAIL'} ${n}`); if (!ok) fail++; };
+t('formula = is neutralised', csvCell('=HYPERLINK("http://evil","click")').startsWith(`"'=HYPERLINK`));
+t('formula + - @ neutralised', csvCell('+cmd|calc').startsWith("'+") && csvCell('-2+3+cmd').startsWith("'-") && csvCell('@SUM(A1)').startsWith("'@"));
+t('tab / CR start neutralised', csvCell('\t=1').startsWith("\"'") || csvCell('\t=1').startsWith("'"));
+t('negative NUMBER untouched', csvCell(-500) === '-500');
+t('numeric text "-500" and "1,200.50" untouched', csvCell('-500') === '-500' && csvCell('1,200.50') === '"1,200.50"');
+t('phone +92 300 1234567 untouched', csvCell('+92 300 1234567') === '+92 300 1234567');
+t('normal text, quotes, commas, null', csvCell('Ali Khan') === 'Ali Khan' && csvCell('a,b') === '"a,b"' && csvCell('say "hi"') === '"say ""hi"""' && csvCell(null) === '');
+if (fail) process.exit(1);

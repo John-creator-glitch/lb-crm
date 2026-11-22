@@ -1,0 +1,10 @@
+import { maskCnic } from '../src/lib/cnic';
+let fails = 0;
+const eq = (n: string, g: unknown, w: unknown) => { const ok = g === w; if (!ok) fails++; console.log(`${ok ? 'PASS' : 'FAIL'} ${n}${ok ? '' : ` got=${g} want=${w}`}`); };
+eq('full cnic', maskCnic('3520212345671'), '35202-1234567-1');
+eq('already masked', maskCnic('35202-1234567-1'), '35202-1234567-1');
+eq('partial', maskCnic('352021234'), '35202-1234');
+eq('letters dropped', maskCnic('35a202'), '35202');
+eq('too long is cut', maskCnic('35202123456719999'), '35202-1234567-1');
+eq('empty', maskCnic(''), '');
+if (fails) process.exit(1);
