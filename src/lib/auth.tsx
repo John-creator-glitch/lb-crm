@@ -20,11 +20,41 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
+// 2 hours of complete inactivity (no mouse, touch, or keyboard) triggers an automatic sign out
+const INACTIVITY_TIMEOUT_MS = 2 * 60 * 60 * 1000;
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const [recovery, setRecovery] = useState(false);
+
+  // Inactivity auto-logout tracker
+  useEffect(() => {
+    if (!session) return;
+
+    let timer: NodeJS.Timeout;
+
+    const resetTimer = () => {
+      clearTimeout(timer);
+      timer = setTimeout(async () => {
+        console.warn('User inactive for 2 hours. Auto signing out.');
+        await supabase.auth.signOut();
+        setProfile(null);
+        setSession(null);
+        window.location.hash = '';
+      }, INACTIVITY_TIMEOUT_MS);
+    };
+
+    const events = ['mousedown', 'mousemove', 'keydown', 'scroll', 'touchstart', 'click'];
+    events.forEach(evt => window.addEventListener(evt, resetTimer, { passive: true }));
+    resetTimer();
+
+    return () => {
+      clearTimeout(timer);
+      events.forEach(evt => window.removeEventListener(evt, resetTimer));
+    };
+  }, [session]);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
