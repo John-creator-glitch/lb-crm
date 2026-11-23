@@ -136,17 +136,41 @@ export default function Layout({ current, onNavigate, onSearch, children }: { cu
 
       {/* Mobile "More" sheet */}
       {more && (
-        <div className="lg:hidden fixed inset-0 z-50 bg-black/40" onClick={() => setMore(false)}>
-          <div className="absolute bottom-0 inset-x-0 bg-white rounded-t-2xl p-4 pb-[calc(1rem+env(safe-area-inset-bottom))]" onClick={e => e.stopPropagation()}>
-            <div className="flex items-center justify-between mb-2"><p className="font-semibold text-slate-900">More</p><button onClick={() => setMore(false)} className="p-2 -m-2 text-slate-400" aria-label="Close"><X className="w-5 h-5" /></button></div>
-            <div className="divide-y divide-slate-100">
-              {visibleItems.filter(i => !TABS.includes(i.route)).map((item, idx, arr) => { const Icon = item.icon; return (
-                <Fragment key={item.route}>
-                {item.group !== arr[idx - 1]?.group && <p className="pt-3 pb-1 text-[10px] font-semibold uppercase tracking-wider text-slate-400">{item.group}</p>}
-                <button onClick={() => go(item.route)} className="w-full flex items-center gap-3 py-3.5 text-slate-700"><Icon className="w-5 h-5 text-slate-400" />{item.label}</button>
-                </Fragment>
-              ); })}
-              <button onClick={signOut} className="w-full flex items-center gap-3 py-3.5 text-rose-600"><LogOut className="w-5 h-5" />Sign out ({profile?.full_name || 'User'})</button>
+        <div className="lg:hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm transition-opacity" onClick={() => setMore(false)}>
+          <div className="absolute bottom-0 inset-x-0 bg-white rounded-t-3xl max-h-[85vh] flex flex-col p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] shadow-2xl" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <p className="font-bold text-slate-900 text-base">Menu & Modules</p>
+              <button onClick={() => setMore(false)} className="p-2 -mr-2 text-slate-400 hover:text-slate-700 active:scale-95" aria-label="Close">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="overflow-y-auto overscroll-contain flex-1 py-2 divide-y divide-slate-100">
+              {visibleItems.filter(i => !TABS.includes(i.route)).map((item, idx, arr) => {
+                const Icon = item.icon;
+                return (
+                  <Fragment key={item.route}>
+                    {item.group !== arr[idx - 1]?.group && (
+                      <p className="pt-3 pb-1 text-[11px] font-bold uppercase tracking-wider text-slate-400">{item.group}</p>
+                    )}
+                    <button
+                      onClick={() => go(item.route)}
+                      className="w-full flex items-center gap-3.5 py-3 px-2 rounded-xl text-slate-700 hover:bg-slate-50 active:bg-amber-50 active:text-amber-800 text-left transition-colors font-medium text-sm"
+                    >
+                      <Icon className="w-5 h-5 text-slate-400 flex-shrink-0" />
+                      <span>{item.label}</span>
+                    </button>
+                  </Fragment>
+                );
+              })}
+              <div className="pt-2">
+                <button
+                  onClick={signOut}
+                  className="w-full flex items-center gap-3.5 py-3 px-2 rounded-xl text-rose-600 hover:bg-rose-50 active:bg-rose-100 text-left transition-colors font-medium text-sm"
+                >
+                  <LogOut className="w-5 h-5 flex-shrink-0" />
+                  <span>Sign out ({profile?.full_name || 'User'})</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>

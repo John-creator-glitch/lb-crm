@@ -82,7 +82,7 @@ export function Button({
       (r as Promise<unknown>).then(() => setPending(false), () => setPending(false));
     }
   };
-  const base = 'inline-flex items-center justify-center gap-2 font-medium rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed';
+  const base = 'inline-flex items-center justify-center gap-2 font-medium rounded-lg transition active:scale-[0.98] active:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed select-none cursor-pointer';
   const sizes = { sm: 'px-3 py-2 min-h-[40px] text-sm', md: 'px-4 py-3 min-h-[44px] text-sm' };
   const variants = {
     primary: 'bg-amber-500 text-slate-900 hover:bg-amber-400 shadow-sm shadow-amber-500/20',

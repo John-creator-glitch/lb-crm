@@ -9,6 +9,7 @@ export const envOk = Boolean(supabaseUrl && supabaseAnonKey);
 export const supabase = createClient(supabaseUrl || 'http://missing.invalid', supabaseAnonKey || 'missing', {
   auth: {
     persistSession: true,
+    storage: window.sessionStorage,
     autoRefreshToken: true,
     detectSessionInUrl: true,
   },
